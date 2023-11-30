@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+<body>
+
+    <div id="app" class="user-profile-container">
+      <div v-if="user" class="user-profile">
+        <div class="profile-section">
+          <img :src="user.profilePicture" alt="Profile Picture" class="profile-picture" />
+          <h2 class="user-name">{{ user.name }}</h2>
+          <p class="user-email">{{ user.email }}</p>
+        </div>
+    
+        <div class="computed-section">
+          <p class="user-age">Age: {{ userAge }}</p>
+        </div>
+    
+        <div class="greeting-section">
+          <p class="greeting">Welcome, {{ greeting }}</p>
+        </div>
+    
+        <form @submit.prevent="saveChanges" class="profile-form">
+          <label for="name">Name:</label>
+          <input type="text" id="name" v-model="user.name" />
+    
+          <label for="email">Email:</label>
+          <input type="email" id="email" v-model="user.email" />
+    
+          <label for="profilePicture">Profile Picture URL:</label>
+          <input type="text" id="profilePicture" v-model="user.profilePicture" />
+    
+          <label for="birthdate">Birthdate:</label>
+          <input type="date" id="birthdate" v-model="user.birthdate" />
+    
+          <label for="role">Role:</label>
+          <select id="role" v-model="userRole">
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+    
+          <button type="submit" class="save-button">Save Changes</button>
+        </form>
+      </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script>
+    new Vue({
+      el: '#app',
+      data: {
+        user: null,
+        userRole: null,
+        greeting: 'User',
+      },
+      computed: {
+        userAge() {
+          if (this.user && this.user.birthdate) {
+            const birthdate = new Date(this.user.birthdate);
+            const today = new Date();
+            return today.getFullYear() - birthdate.getFullYear();
+          }
+          return 0;
+        },
+      },
+      watch: {
+        userRole(newVal, oldVal) {
+          console.log('User role changed:', newVal);
+          this.greeting = newVal === 'admin' ? 'Admin' : 'User';
+        },
+      },
+      methods: {
+        saveChanges() {
+          console.log('Changes saved:', this.user);
+          this.greeting = this.userRole === 'admin' ? 'Admin' : 'User';
+        },
+      },
+      created() {
+        this.fetchUserData();
+      },
+      methods: {
+        fetchUserData() {
+          setTimeout(() => {
+            this.user = {
+              name: 'John Doe',
+              email: 'john@example.com',
+              profilePicture: 'profile.jpg',
+              birthdate: '1990-01-01',
+            };
+            this.userRole = 'user';
+            this.greeting = 'User';
+          }, 1000); 
+        },
+      },
+    });
+    </script>
+</body>
+</html>
